@@ -1,0 +1,153 @@
+Multi valued functons examples
+
+select * from customer;
+
+1)
+create function fn_customerdetails
+(@customer_id int)
+returns @customer table
+( customer_name varchar(30), salesman_id int)
+as
+begin
+insert into @customer
+ select CUSTOMER_NAME, SALESMAN_ID from customer where customer_id=@customer_id
+  return
+ end
+
+ select * from fn_customerdetails(3001);
+
+2)
+create function fn_customerdetails1
+(@customer_id int )
+returns @customer table
+( customer_name varchar(30), salesman_id int, city varchar(30))
+as
+begin
+insert into @customer
+ select CUSTOMER_NAME, SALESMAN_ID, city from customer where customer_id=@customer_id
+  return
+ end
+
+ select * from fn_customerdetails1(3001);
+
+
+3)
+create function fn_customerdetails2
+(@customer_id int )
+returns @customer table
+( customer_name varchar(30), salesman_id int, city varchar(30))
+as
+begin
+insert into @customer
+ select CUSTOMER_NAME, SALESMAN_ID, city from customer where customer_id=@customer_id and city = 'london'
+  return
+ end
+
+ select * from fn_customerdetails2(3001);
+
+
+ 4)
+ create function fn_customerdetails03(@cno int )
+returns @customer table
+( customer_name varchar(30), salesman_id int, city varchar(30))
+as
+begin
+insert into @customer
+ select distinct CUSTOMER_NAME, c.SALESMAN_ID, c.city from customer c, salesman s where c.customer_id=@cno and customer_name like 'b%'
+  return
+ end
+
+select * from fn_customerdetails03(3001);
+
+5)
+create function fn_customerdetails4
+(@customer_id int )
+returns @customer table
+( customer_name varchar(30), salesman_id int, city varchar(30))
+as
+begin
+insert into @customer
+ select CUSTOMER_NAME, SALESMAN_ID, city from customer where customer_id=@customer_id or city = 'london'
+  return
+ end
+
+select * from fn_customerdetails4(3001);
+
+
+6)
+create function fn_customerdetails5
+(@customer_id int )
+returns @customer table
+( customer_name varchar(30), salesman_id int, city varchar(30))
+as
+begin
+insert into @customer
+ select CUSTOMER_NAME, SALESMAN_ID, city from customer where customer_id=@customer_id and customer_name is not null
+  return
+ end
+
+select * from fn_customerdetails5(3001);
+
+
+
+select * from orders
+7)
+create function fn_orderdetailss
+(@order_id int )
+returns @order table
+( orderdate date, salesman_id int, customer_id int)
+as
+begin
+insert into @order
+ select order_date, SALESMAN_ID, CUSTOMER_ID from orders where @order_id=ORDER_NO and  order_date ='2012-10-05'
+  return
+ end
+
+ select * from fn_orderdetailss(70001);
+
+
+ 8)
+ create function fn_orderdetailss01
+(@order_id int )
+returns @order table
+( orderdate date, customer_name varchar(30), salesman_id int, customer_id int)
+as
+begin
+insert into @order
+ select order_date, customer_name, c.SALESMAN_ID, c.CUSTOMER_ID from orders o, customer c
+ where o.customer_id = c.customer_id and @order_id=ORDER_NO
+  return
+ end
+
+ select * from fn_orderdetailss01(70001);
+
+
+ 9)
+  create function fn_orderdetails002
+(@order_id int )
+returns @order table
+( orderdate date, customer_name varchar(30), salesman_id int, customer_id int, pruchaseamt int)
+as
+begin
+insert into @order
+ select order_date, customer_name, c.SALESMAN_ID, c.CUSTOMER_ID, PURCHASE_AMOUNT from orders o, customer c 
+ where @order_id=ORDER_NO and  PURCHASE_AMOUNT>1000
+  return
+ end
+
+  select * from fn_orderdetails002(70001);
+
+  10)
+    create function fn_orderdetails3
+(@order_id int )
+returns @order table
+( orderdate date, customer_name varchar(30), salesman_id int, customer_id int, pruchaseamt int)
+as
+begin
+insert into @order
+  select order_date, customer_name, c.SALESMAN_ID, c.CUSTOMER_ID, PURCHASE_AMOUNT from orders o, customer c , salesman s
+ where @order_id=ORDER_NO and s.SALESMAN_ID=o.SALESMAN_ID and c.CUSTOMER_ID=o.CUSTOMER_ID
+return 
+ end
+
+  select * from fn_orderdetails3(70001);
